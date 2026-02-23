@@ -14,8 +14,8 @@ const ecs = new ECSClient({ region: process.env.AWS_REGION });
  * 5. Lambda resumes and returns the result
  */
 exports.handler = withDurableExecution(async (event, context) => {
-  console.log('Starting Lambda durable function - Callback Pattern');
-  console.log('Event:', JSON.stringify(event));
+  context.logger.info('Starting Lambda durable function - Callback Pattern');
+  context.logger.info('Event:', JSON.stringify(event));
 
   const message = event.message || 'Hello from Lambda durable function';
   const processingTime = event.processingTime || 10;
@@ -25,8 +25,8 @@ exports.handler = withDurableExecution(async (event, context) => {
     const result = await context.waitForCallback(
       'ecs-task-callback',
       async (callbackId) => {
-        console.log('Callback ID created:', callbackId);
-        console.log('Starting ECS task with callback ID...');
+        context.logger.info('Callback ID created:', callbackId);
+        context.logger.info('Starting ECS task with callback ID...');
         
         // Start ECS task with callback ID as environment variable
         const runTaskParams = {
@@ -61,7 +61,7 @@ exports.handler = withDurableExecution(async (event, context) => {
         }
 
         const taskArn = response.tasks[0].taskArn;
-        console.log('ECS task started:', taskArn);
+        context.logger.info('ECS task started:', taskArn);
       },
       {
         timeout: { hours: 1 },  // Wait up to 1 hour for callback
@@ -69,7 +69,7 @@ exports.handler = withDurableExecution(async (event, context) => {
       }
     );
 
-    console.log('Callback received with result:', result);
+    context.logger.info('Callback received with result:', result);
 
     return {
       statusCode: 200,
@@ -81,7 +81,7 @@ exports.handler = withDurableExecution(async (event, context) => {
     };
 
   } catch (error) {
-    console.error('Error in durable function:', error);
+    context.logger.error('Error in durable function:', error);
     
     return {
       statusCode: 500,
