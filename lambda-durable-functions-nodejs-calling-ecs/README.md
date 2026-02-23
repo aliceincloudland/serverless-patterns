@@ -202,13 +202,6 @@ Delete the stack:
 sam delete
 ```
 
-## Cost Considerations
-
-- **Lambda:** Charged only for active execution time, not during wait periods
-- **ECS Fargate:** Charged per vCPU and memory per second while tasks run
-- **CloudWatch Logs:** Charged for log ingestion and storage
-- **VPC:** NAT Gateway charges if using private subnets (this pattern uses public subnets)
-
 ## Additional Resources
 
 - [AWS Lambda durable functions Documentation](https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html)
